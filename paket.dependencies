@@ -1,0 +1,20 @@
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Core
+
+group Test
+source https://api.nuget.org/v3/index.json
+
+nuget Expecto
+nuget Expecto.FsCheck
+nuget Expecto.BenchmarkDotNet
+
+group DotNetCoreBuild
+source https://api.nuget.org/v3/index.json
+
+nuget FAKE
+nuget Fake.Core
+nuget Fake.DotNet.Cli
+nuget Fake.IO.FileSystem
+nuget Fake.Core.Target
+nuget Fake.Core.Process
