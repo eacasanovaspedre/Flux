@@ -220,6 +220,7 @@
               Title="$(Title)"
               Authors="$(Authors)"
               Description="$(Description)"
+              SymbolPackageFormat="symbols.nupkg"
               Copyright="$(Copyright)"
               RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
               LicenseUrl="$(PackageLicenseUrl)"

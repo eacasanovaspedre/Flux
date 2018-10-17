@@ -1,16 +1,17 @@
-source https://api.nuget.org/v3/index.json
+source https://www.nuget.org/api/v2
+framework: netcoreapp2.1
 
 nuget FSharp.Core
 
 group Test
-source https://api.nuget.org/v3/index.json
+    source https://www.nuget.org/api/v2
 
-nuget Expecto
-nuget Expecto.FsCheck
-nuget Expecto.BenchmarkDotNet
+    nuget Expecto
+    nuget Expecto.FsCheck
+    nuget Expecto.BenchmarkDotNet
 
 group DotNetCoreBuild
-source https://api.nuget.org/v3/index.json
+source https://www.nuget.org/api/v2
 
 nuget FAKE
 nuget Fake.Core

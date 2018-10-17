@@ -2,6 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>FluxSharp</PackageId>
+    <Authors>Enrique Alfonso Casanovas Pedre</Authors>
+    <Description>This library contains some F# extensions</Description>
+    <PackageProjectUrl>https://github.com/eacasanovaspedre/Flux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/eacasanovaspedre/Flux</RepositoryUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Library.fs" />

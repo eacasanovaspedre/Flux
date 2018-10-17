@@ -8,7 +8,7 @@
 nuget Fake.Core
 nuget Fake.DotNet.Cli
 nuget Fake.IO.FileSystem
-nuget Fake.Core.Target 
+nuget Fake.Core.Target
 nuget Fake.Core.Process//"
 #load "./.fake/build.fsx/intellisense.fsx"
 
@@ -29,12 +29,29 @@ let allProjects = [project; testProject]
 let dotnetcliVersion = "2.0.2"
 let dotnetExePath = "dotnet"
 let paketPath = "./.paket/paket.exe"
+let versionFile = ".version"
 
 // --------------------------------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------------------------------
 
 let path = System.IO.Path.GetDirectoryName
+
+let versionRegex = System.Text.RegularExpressions.Regex(@"(\d+)\.(\d+).(\d+)(-\w+\d*)?")
+
+let readVersion () = 
+    let rawVersion = System.IO.File.ReadLines versionFile |> Seq.head
+    let result = versionRegex.Match rawVersion
+    if result.Success then
+        int result.Groups.[1].Value, int result.Groups.[2].Value, int result.Groups.[3].Value, result.Groups.[4].Value
+    else
+        failwith "Incorrect version format"
+
+let increaseVersion (major, minor, patch, extra) = (major, minor, patch + 1, extra)
+
+let strVersion (major, minor, patch, extra) = sprintf "%d.%d.%d%s" major minor patch extra
+
+let writeVersion version = System.IO.File.WriteAllText (versionFile, strVersion version)
 
 let run' timeout args dir cmd =
     if Process.execSimple (fun info ->
@@ -105,6 +122,7 @@ Target.create "Build" (fun param ->
 Target.create "Test" (fun param -> runDotnet (path testProject)  "run")
 
 Target.create "Pack" (fun param ->
+    let version = () |> readVersion
     match param.Context.Arguments with
     | ["Debug"]
     | ["Debug"; _] -> " -c Debug"
@@ -113,8 +131,8 @@ Target.create "Pack" (fun param ->
     | ["Release"]
     | ["Release"; _] -> " -c Release"
     | _ -> failwith "Invalid arguments. Usage: Publish [Debug|Release] [ApiKey]"
-    |> sprintf "pack%s"
-    |> runDotnet project
+    |> sprintf "pack -p:Version=%s%s" (strVersion version)
+    |> runDotnet (path project)
 )
 
 Target.create "Publish" (fun param ->
@@ -124,6 +142,13 @@ Target.create "Publish" (fun param ->
         | _ -> failwith "Invalid arguments. Usage: Publish ApiKey"
     let package = !! ((path project) + "/bin/Release/*.nupkg") |> Seq.head
     runDotnet "." (sprintf "nuget push %s -k %s -s https://api.nuget.org/v3/index.json" package key)
+    ()
+    |> readVersion
+    |> increaseVersion
+    |> writeVersion
+    run (sprintf "add %s" versionFile) "." "git"
+    run "commit -m \"Version bump\"" "." "git"
+    run "push" "." "git"
 )
 
 // --------------------------------------------------------------------------------------
