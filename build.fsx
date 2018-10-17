@@ -158,6 +158,8 @@ Target.create "Publish" (fun param ->
 "InstallDotNetCLI"
 ==> "Build"
 ==> "Test"
+
+"InstallDotNetCLI"
 ==> "Pack"
 ==> "Publish"
 
